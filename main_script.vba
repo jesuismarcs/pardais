@@ -1,11 +1,10 @@
-Sub Definir_Hierarquia()
+' ===================================================================
+' ||             CÓDIGO PRINCIPAL - ARMAZENADO NO GITHUB           ||
+' ===================================================================
 
-    ' --- PONTO DE ENTRADA DA VERIFICAÇÃO DE LICENÇA ---
-    If Not VerificarLicencaNoServidor() Then
-        MsgBox "Acesso não autorizado ou licença inválida. Por favor, contacte o fornecedor do programa através de 913239188. ", vbCritical, "Erro de Licença"
-        Exit Sub
-    End If
-    ' --- FIM DA VERIFICAÇÃO ---
+Sub Definir_Hierarquia()
+    ' --- VERIFICAÇÃO DE LICENÇA FOI REMOVIDA DESTE SCRIPT ---
+    ' O "carregador" já fez a verificação antes de descarregar este código.
     
     Dim tsk As MSProject.Task
     Dim currentCode As String
@@ -17,20 +16,17 @@ Sub Definir_Hierarquia()
     Dim errorInHierarchyStep As Boolean
     Dim lastParentTaskWithCode As MSProject.Task
 
+    ' Configurações de performance e de erros
     originalCalculation = Application.Calculation
     Application.Calculation = pjManual
     Application.ScreenUpdating = False
-
     On Error GoTo GlobalErrorHandler
 
     If ActiveProject.Tasks Is Nothing Then GoTo CleanUpAndExit
     If ActiveProject.Tasks.Count = 0 Then GoTo CleanUpAndExit
     
     Set lastParentTaskWithCode = Nothing
-If Not VerificarLicencaNoServidor() Then
-        MsgBox "Acesso não autorizado ou licença inválida. Por favor, contacte o fornecedor do programa através de 913239188. ", vbCritical, "Erro de Licença"
-        Exit Sub
-    End If
+
     For Each tsk In ActiveProject.Tasks
         errorInHierarchyStep = False
         targetLevelForThisTask = 0
@@ -46,10 +42,7 @@ If Not VerificarLicencaNoServidor() Then
                     currentCode = Left(currentCode, Len(currentCode) - 1)
                 End If
             End If
-If Not VerificarLicencaNoServidor() Then
-        MsgBox "Acesso não autorizado ou licença inválida. Por favor, contacte o fornecedor do programa através de 913239188. ", vbCritical, "Erro de Licença"
-        Exit Sub
-    End If
+
             If Len(currentCode) > 0 And IsValidCodeFormat(currentCode) Then
                 parts = Split(currentCode, ".")
                 targetLevelForThisTask = UBound(parts) + 1
@@ -66,14 +59,6 @@ If Not VerificarLicencaNoServidor() Then
                 End If
             End If
             
-             If Not VerificarLicencaNoServidor() Then
-        MsgBox "Acesso não autorizado ou licença inválida. Por favor, contacte o fornecedor do programa através de 913239188. ", vbCritical, "Erro de Licença"
-        Exit Sub
-    End If
-    If Not VerificarLicencaNoServidor() Then
-        MsgBox "Acesso não autorizado ou licença inválida. Por favor, contacte o fornecedor do programa através de 913239188. ", vbCritical, "Erro de Licença"
-        Exit Sub
-    End If
             If targetLevelForThisTask > 0 Then
                 On Error Resume Next
                 While tsk.OutlineLevel > 1
@@ -97,11 +82,6 @@ SkipHierarchyAdjustmentForThisTask:
         End If
     Next tsk
     
- If Not VerificarLicencaNoServidor() Then
-        MsgBox "Acesso não autorizado ou licença inválida. Por favor, contacte o fornecedor do programa através de 913239188. ", vbCritical, "Erro de Licença"
-        Exit Sub
-    End If
-    
     MsgBox "Processo de atualização de hierarquia concluído.", vbInformation
 
 CleanUpAndExit:
@@ -116,3 +96,19 @@ GlobalErrorHandler:
     Application.ScreenUpdating = True
     On Error GoTo 0
 End Sub
+
+' --- FUNÇÃO DE SUPORTE (DEPENDÊNCIA) ---
+' Esta função deve estar no mesmo ficheiro do GitHub para ser encontrada.
+Private Function IsValidCodeFormat(code As String) As Boolean
+    IsValidCodeFormat = False
+    If Len(code) = 0 Then Exit Function
+    If Left(code, 1) = "." Or Right(code, 1) = "." Then Exit Function
+    If InStr(code, "..") > 0 Then Exit Function
+    Dim char As String, i As Integer
+    For i = 1 To Len(code)
+        char = Mid(code, i, 1)
+        If Not (char >= "0" And char <= "9" Or char = ".") Then Exit Function
+    Next i
+    If Replace(code, ".", "") = "" Then Exit Function
+    IsValidCodeFormat = True
+End Function
