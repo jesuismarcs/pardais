@@ -2,9 +2,10 @@
 ' ||             CÓDIGO PRINCIPAL - ARMAZENADO NO GITHUB           ||
 ' ===================================================================
 
+Option Explicit ' Adicionado para garantir a declaração de todas as variáveis
+
 Sub Definir_Hierarquia()
-    ' --- VERIFICAÇÃO DE LICENÇA FOI REMOVIDA DESTE SCRIPT ---
-    ' O "carregador" já fez a verificação antes de descarregar este código.
+    ' --- A verificação de licença já foi feita pelo carregador ---
     
     Dim tsk As MSProject.Task
     Dim currentCode As String
@@ -90,7 +91,7 @@ CleanUpAndExit:
     Exit Sub
 
 GlobalErrorHandler:
-    MsgBox "Ocorreu um erro geral inesperado: " & Err.Description & " (Erro nº " & Err.Number & ")", vbCritical
+    MsgBox "Ocorreu um erro geral inesperado na execução remota: " & Err.Description & " (Erro nº " & Err.Number & ")", vbCritical
     On Error Resume Next
     Application.Calculation = originalCalculation
     Application.ScreenUpdating = True
@@ -98,8 +99,8 @@ GlobalErrorHandler:
 End Sub
 
 ' --- FUNÇÃO DE SUPORTE (DEPENDÊNCIA) ---
-' Esta função deve estar no mesmo ficheiro do GitHub para ser encontrada.
-Private Function IsValidCodeFormat(code As String) As Boolean
+' CORREÇÃO: Alterado de Private para Public para garantir a visibilidade
+Public Function IsValidCodeFormat(code As String) As Boolean
     IsValidCodeFormat = False
     If Len(code) = 0 Then Exit Function
     If Left(code, 1) = "." Or Right(code, 1) = "." Then Exit Function
